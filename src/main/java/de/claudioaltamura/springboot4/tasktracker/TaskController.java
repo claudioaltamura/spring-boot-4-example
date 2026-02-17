@@ -1,5 +1,8 @@
 package de.claudioaltamura.springboot4.tasktracker;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +18,11 @@ public class TaskController {
         this.service = service;
     }
 
+    @Operation(summary = "Create a new task", description = "Creates a new task with title and description")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Task created"),
+            @ApiResponse(responseCode = "400", description = "Invalid request")
+    })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Task create(@RequestBody TaskRequest request) {
