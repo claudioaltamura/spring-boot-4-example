@@ -3,7 +3,10 @@ package de.claudioaltamura.springboot4.tasktracker;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,15 +26,22 @@ public class TaskController {
             @ApiResponse(responseCode = "201", description = "Task created"),
             @ApiResponse(responseCode = "400", description = "Invalid request")
     })
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Task create(@RequestBody TaskRequest request) {
+    public Task create(@Valid @RequestBody TaskRequest request) {
         return service.create(request.getTitle(), request.getDescription());
     }
 
-    @PutMapping("/{id}")
-    public Task update(@PathVariable Long id,
-                       @RequestBody TaskRequest request) {
+    @Operation(summary = "Update an existing task", description = "Updates title and description of an existing task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Task updated"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "404", description = "Task not found")
+    })
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public Task update(@Size(min = 1) @PathVariable Long id,
+                       @Valid @RequestBody TaskRequest request) {
         return service.update(id, request.getTitle(), request.getDescription());
     }
 
