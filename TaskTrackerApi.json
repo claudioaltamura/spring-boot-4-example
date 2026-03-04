@@ -1,8 +1,9 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "OpenAPI definition",
-    "version": "v0"
+    "title": "Task Tracker API",
+    "description": "Demo project for Spring Boot 4.0 and OpenAPI spec",
+    "version": "1.0.0"
   },
   "servers": [
     {
