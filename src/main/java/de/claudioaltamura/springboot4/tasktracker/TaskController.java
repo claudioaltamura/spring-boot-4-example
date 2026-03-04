@@ -4,7 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,7 @@ public class TaskController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Task create(@Valid @RequestBody TaskRequest request) {
+        //TODO add TaskResponse as model for Task
         return service.create(request.getTitle(), request.getDescription());
     }
 
@@ -40,10 +42,13 @@ public class TaskController {
     })
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Task update(@Size(min = 1) @PathVariable Long id,
+    public Task update(@NotNull @Min(1) @PathVariable Long id,
                        @Valid @RequestBody TaskRequest request) {
         return service.update(id, request.getTitle(), request.getDescription());
     }
+
+
+    //TODO add openapi annotations
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
