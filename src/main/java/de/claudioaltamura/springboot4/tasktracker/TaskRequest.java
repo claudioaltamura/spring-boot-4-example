@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+
+//TODO record
 @Setter
 @Getter
 @Schema(name = "TaskRequest", description = "Request payload to create or update a task")
