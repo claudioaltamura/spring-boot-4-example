@@ -1,6 +1,7 @@
 package de.claudioaltamura.springboot4.tasktracker;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,12 +13,11 @@ import java.time.Instant;
 @Table(name = "tasks")
 public class TaskEntity {
 
-    //TODO add validation annotations (e.g. @NotBlank for title)
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     private String title;
 
     @Column(length = 2000)
