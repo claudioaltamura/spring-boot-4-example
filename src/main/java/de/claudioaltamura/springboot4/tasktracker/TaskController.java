@@ -39,7 +39,7 @@ public class TaskController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(service.create(request.getTitle(), request.getDescription()));
+                .body(service.create(request.title(), request.description()));
     }
 
     @Operation(summary = "Update an existing task", description = "Updates title and description of an existing task")
@@ -52,7 +52,7 @@ public class TaskController {
     @ResponseStatus(HttpStatus.OK)
     public TaskEntity update(@NotNull @Min(1) @PathVariable Long id,
                              @Valid @RequestBody TaskRequest request) {
-        return service.update(id, request.getTitle(), request.getDescription());
+        return service.update(id, request.title(), request.description());
     }
 
 
@@ -67,7 +67,7 @@ public class TaskController {
     @PutMapping("/{id}/status")
     public TaskEntity updateStatus(@PathVariable Long id,
                                    @RequestBody TaskStatusRequest request) {
-        return service.updateStatus(id, request.getStatus());
+        return service.updateStatus(id, request.status());
     }
 
     @GetMapping
