@@ -5,7 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-//Methoden überarbeiten
+//TODO improve methods
+//TODO introduce TaskId
 @Service
 @Transactional
 public class TaskService {
@@ -16,41 +17,36 @@ public class TaskService {
         this.repository = repository;
     }
 
-    public Task create(String title, String description) {
-        TaskEntity savedTask = repository.save(new TaskEntity(title, description));
-        return new Task(savedTask.getId(), savedTask.getTitle(), savedTask.getDescription(), savedTask.getStatus(), savedTask.getCreatedAt());
+    public Task create(UserId userId, String title, String description) {
+        TaskEntity savedTask = repository.save(new TaskEntity(title, description,userId));
+        return new Task(savedTask.getTaskId(), savedTask.getTitle(), savedTask.getDescription(), savedTask.getStatus(), savedTask.getCreatedAt());
     }
 
-    public TaskEntity update(Long id, String title, String description) {
-        TaskEntity task = getById(id);
+    public TaskEntity update(UserId userId, Long taskId, String title, String description) {
+        TaskEntity task = getByUserIdAndTaskId(userId, taskId);
         task.setTitle(title);
         task.setDescription(description);
         return task;
     }
 
     //not found
-    public void delete(Long id) {
-        TaskEntity task = getById(id);
+    public void delete(UserId userId, Long taskId) {
+        TaskEntity task = getByUserIdAndTaskId(userId, taskId);
         repository.delete(task);
     }
 
-    public TaskEntity updateStatus(Long id, TaskStatus status) {
-        TaskEntity task = getById(id);
+    public TaskEntity updateStatus(UserId userId, Long taskId, TaskStatus status) {
+        TaskEntity task = getByUserIdAndTaskId(userId, taskId);
         task.setStatus(status);
         return task;
     }
 
-    public List<TaskEntity> findAll() {
-        return repository.findAll();
+    public List<TaskEntity> getByUserIdAndStatus(UserId userId, TaskStatus status) {
+        return repository.findByUserIdAndStatus(userId, status);
     }
 
-    public List<TaskEntity> findByStatus(TaskStatus status) {
-        return repository.findByStatus(status);
-    }
-
-    private TaskEntity getById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new TaskNotFoundException(id));
+    private TaskEntity getByUserIdAndTaskId(UserId userId, Long taskId) {
+        return repository.findByUserIdAndTaskId(userId, taskId);
     }
 }
 

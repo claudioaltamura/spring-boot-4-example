@@ -6,6 +6,11 @@ import java.util.List;
 
 public interface TaskRepository extends JpaRepository<TaskEntity, Long> {
 
-    List<TaskEntity> findByStatus(TaskStatus status);
+    List<TaskEntity> findByUserId(UserId userId);
+
+    TaskEntity findByUserIdAndTaskId(UserId userId, Long taskId);
+
+    List<TaskEntity> findByUserIdAndStatus(UserId userId, TaskStatus status);
+
 }
 

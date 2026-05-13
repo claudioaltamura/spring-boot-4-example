@@ -12,6 +12,8 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +25,10 @@ public class TaskController {
 
     private final TaskService service;
 
-    public TaskController(TaskService service) {
+    private final CurrentUserProvider currentUserProvider;
+
+    public TaskController(CurrentUserProvider currentUserProvider, TaskService service) {
+        this.currentUserProvider = currentUserProvider;
         this.service = service;
     }
 
@@ -35,11 +40,12 @@ public class TaskController {
                             schema = @Schema(implementation = TaskError.class)))
     })
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Task> create(@Valid @RequestBody TaskRequest request) {
+    public ResponseEntity<Task> create(@AuthenticationPrincipal Jwt jwt,
+            @Valid @RequestBody TaskRequest request) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(service.create(request.title(), request.description()));
+                .body(service.create(currentUserProvider.getCurrentUser(jwt), request.title(), request.description()));
     }
 
     @Operation(summary = "Update an existing task", description = "Updates title and description of an existing task")
@@ -50,9 +56,10 @@ public class TaskController {
     })
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public TaskEntity update(@NotNull @Min(1) @PathVariable Long id,
+    public TaskEntity update(@AuthenticationPrincipal Jwt jwt,
+                             @NotNull @Min(1) @PathVariable Long id,
                              @Valid @RequestBody TaskRequest request) {
-        return service.update(id, request.title(), request.description());
+        return service.update(currentUserProvider.getCurrentUser(jwt), id, request.title(), request.description());
     }
 
 
@@ -60,35 +67,32 @@ public class TaskController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        service.delete(id);
+    public void delete(@AuthenticationPrincipal Jwt jwt,
+                       @PathVariable Long id) {
+        service.delete(currentUserProvider.getCurrentUser(jwt), id);
     }
 
     @PutMapping("/{id}/status")
-    public TaskEntity updateStatus(@PathVariable Long id,
+    public TaskEntity updateStatus(@AuthenticationPrincipal Jwt jwt,
+                                   @PathVariable Long id,
                                    @RequestBody TaskStatusRequest request) {
-        return service.updateStatus(id, request.status());
-    }
-
-    @GetMapping
-    public List<TaskEntity> findAll() {
-        return service.findAll();
+        return service.updateStatus(currentUserProvider.getCurrentUser(jwt), id, request.status());
     }
 
     @GetMapping("/done")
-    public List<TaskEntity> findDone() {
-        return service.findByStatus(TaskStatus.DONE);
+    public List<TaskEntity> findDone(@AuthenticationPrincipal Jwt jwt) {
+        return service.getByUserIdAndStatus(currentUserProvider.getCurrentUser(jwt), TaskStatus.DONE);
     }
 
     @GetMapping("/in-progress")
-    public List<TaskEntity> findInProgress() {
-        return service.findByStatus(TaskStatus.IN_PROGRESS);
+    public List<TaskEntity> findInProgress(@AuthenticationPrincipal Jwt jwt) {
+        return service.getByUserIdAndStatus(currentUserProvider.getCurrentUser(jwt), TaskStatus.IN_PROGRESS);
     }
 
     @GetMapping("/not-done")
-    public List<TaskEntity> findNotDone() {
+    public List<TaskEntity> findNotDone(@AuthenticationPrincipal Jwt jwt) {
         //TODO TODO and IN_PROGRESS
-        return service.findByStatus(TaskStatus.TODO);
+        return service.getByUserIdAndStatus(currentUserProvider.getCurrentUser(jwt), TaskStatus.TODO);
     }
 }
 
