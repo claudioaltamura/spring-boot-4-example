@@ -1,17 +1,18 @@
 package de.claudioaltamura.springboot4.tasktracker;
-p
-import jakarta.persistence.Embeddable;
-import java.io.Serializable;
-import java.util.Objects;
 
+import jakarta.persistence.Embeddable;
+import lombok.*;
+
+import java.io.Serializable;
+
+@Getter
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // JPA requires a no-args constructor
 @Embeddable
 public class UserId implements Serializable {
 
     private Long value;
-
-    protected UserId() {
-        // JPA
-    }
 
     public UserId(Long value) {
         if (value == null) {
@@ -20,24 +21,4 @@ public class UserId implements Serializable {
         this.value = value;
     }
 
-    public Long getValue() {
-        return value;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof UserId userId)) return false;
-        return Objects.equals(value, userId.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
-    }
-
-    @Override
-    public String toString() {
-        return value.toString();
-    }
 }
