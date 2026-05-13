@@ -1,7 +1,5 @@
 package de.claudioaltamura.springboot4.tasktracker;
 
-import jakarta.persistence.*;
-
 import java.time.Instant;
 
 public record Task(
