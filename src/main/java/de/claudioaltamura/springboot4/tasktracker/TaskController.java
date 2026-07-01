@@ -48,6 +48,7 @@ public class TaskController {
                 .body(service.create(currentUserProvider.getCurrentUser(jwt), request.title(), request.description()));
     }
 
+    //TODO return ResponseEntity<Task>
     @Operation(summary = "Update an existing task", description = "Updates title and description of an existing task")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Task updated"),
@@ -72,6 +73,7 @@ public class TaskController {
         service.delete(currentUserProvider.getCurrentUser(jwt), id);
     }
 
+    //TODO return ResponseEntity<Task>
     @PutMapping("/{id}/status")
     public TaskEntity updateStatus(@AuthenticationPrincipal Jwt jwt,
                                    @PathVariable Long id,
@@ -79,16 +81,19 @@ public class TaskController {
         return service.updateStatus(currentUserProvider.getCurrentUser(jwt), id, request.status());
     }
 
+    //TODO return ResponseEntity<Task>
     @GetMapping("/done")
     public List<TaskEntity> findDone(@AuthenticationPrincipal Jwt jwt) {
         return service.getByUserIdAndStatus(currentUserProvider.getCurrentUser(jwt), TaskStatus.DONE);
     }
 
+    //TODO return ResponseEntity<Task>
     @GetMapping("/in-progress")
     public List<TaskEntity> findInProgress(@AuthenticationPrincipal Jwt jwt) {
         return service.getByUserIdAndStatus(currentUserProvider.getCurrentUser(jwt), TaskStatus.IN_PROGRESS);
     }
 
+    //TODO return ResponseEntity<Task>
     @GetMapping("/not-done")
     public List<TaskEntity> findNotDone(@AuthenticationPrincipal Jwt jwt) {
         //TODO TODO and IN_PROGRESS
