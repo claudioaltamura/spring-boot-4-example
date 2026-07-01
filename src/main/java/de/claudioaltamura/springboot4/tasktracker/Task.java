@@ -7,5 +7,6 @@ public record Task(
         String title,
         String description,
         TaskStatus status,
-        Instant createdAt) {
+        Instant createdAt,
+        UserId userId) {
 }
